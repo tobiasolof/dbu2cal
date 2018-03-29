@@ -1,5 +1,5 @@
 import ipgetter
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request, render_template
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 
@@ -8,44 +8,24 @@ import dbu2cal
 app = Flask(__name__)
 
 
-@app.route('/host')
-@use_kwargs({
-    'TeamId': fields.Str(required=True),
-    'PoolId': fields.Str(),
-    'DateFrom': fields.Str(),
-    'DateTo': fields.Str(),
-    'HomeMatch': fields.Str(),
-    'AwayMatch': fields.Str()
-})
-def host_cal(TeamId, PoolId, DateFrom, DateTo, HomeMatch, AwayMatch):
-    """Parse url and save calendar to file."""
+@app.route('/')
+def url_form():
+    return render_template('url-form.html')
 
-    # Define DBU url
-    url = 'https://www.dbukoebenhavn.dk/turneringer_og_resultater/resultatsoegning/programTeam.aspx?'
-    url += 'TeamId={}&'.format(TeamId)
-    url += 'PoolId={}&'.format(PoolId)
-    url += 'DateFrom={}&'.format(DateFrom)
-    url += 'DateTo={}&'.format(DateTo)
-    url += 'HomeMatch={}&'.format(HomeMatch)
-    url += 'AwayMatch={}&'.format(AwayMatch)
-    print(url)
+
+@app.route('/', methods=['POST'])
+def host_cal():
+    url = request.form['text']
 
     cal = dbu2cal.build_calendar(url)
     filename = dbu2cal.save_calendar(cal)
 
     ip = ipgetter.myip()
 
-    explanation = 'Paste the following link into your calendar program: '
+    explanation = 'Paste the following link into your calendar program (or click to download): '
+    link = '{}:5000/{}'.format(ip, filename)
 
-    return explanation + '{}:5000/{}'.format(ip, filename)
-
-
-@app.route('/')
-def bost_cal():
-    return 'hej'
-
-
-
+    return explanation + '<br><br>' + '<a href="{}"> {} </a>'.format(filename, link)
 
 
 @app.route('/<path:filename>')
