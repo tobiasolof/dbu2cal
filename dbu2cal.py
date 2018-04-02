@@ -25,6 +25,21 @@ def build_calendar(url):
     # Create calendar object
     cal = icalendar.Calendar()
 
+    # Give calendar a relevant name
+    team = soup.find('h1', attrs={
+        'id':
+            'indhold_0_indholdbredvenstre_0_integrationwrapper_1_ctl01_PageTop_TopHeadline2'}).text
+    # "Kampprogram" is the header if not filtering by team
+    team = team + ' ' if team != 'Kampprogram' else ''
+    league = soup.find('h4', attrs={
+        'id':
+            'indhold_0_indholdbredvenstre_0_integrationwrapper_1_ctl01_PageTop_TopHeadline1'}).text
+    league = league.replace(',', '')
+    cal.add('X-WR-CALNAME', team + league)
+
+    # Define timezone
+    cal.add('X-WR-TIMEZONE', 'Europe/Copenhagen')
+
     # Loop through
     for row in df.iterrows():
         # Create event object
@@ -58,8 +73,6 @@ def build_calendar(url):
 
         # Add event to calendar
         cal.add_component(temp_event)
-
-        # TODO: Calendar name
 
     return cal
 
