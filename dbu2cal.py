@@ -63,19 +63,44 @@ def build_calendar(url):
     return cal
 
 
-def save_calendar(cal, path_prefix='./calendars/'):
+def save_calendar(cal, url, path_prefix='./calendars/', filename=None):
 
-    # Get timestamp and concatenate path
-    timestamp = time.strftime('%Y%m%d-%H%M')
-    filename = 'dbu_game_cal_{}.ics'.format(timestamp)
+    # If filename not defined, use timestamp
+    if not filename:
+        timestamp = time.strftime('%Y%m%d-%H%M')
+        filename = 'dbu_game_cal_{}'.format(timestamp)
     whole_path = os.path.join(path_prefix, filename)
 
+    # Write url to txt file
+    with open(whole_path + '.txt', 'w') as f:
+        f.write(url)
+
     # Write calendar to iCal file
-    with open(whole_path, 'wb') as f:
+    with open(whole_path + '.ics', 'wb') as f:
         f.write(cal.to_ical())
-    print('Calendar saved to {}'.format(whole_path))
+    print('Calendar saved to {}'.format(whole_path + '.ics'))
 
     return filename
 
 
-# TODO: Reload calendar
+def update_calendars():
+
+    # Loop all files in calendar directory
+    print(os.path.abspath('./'))
+    for filename in os.listdir('./calendars/'):
+
+        # If iCal file, check if there is a complementary txt file
+        if filename.endswith('.ics'):
+            main_filename = filename.split('.ics')[0]
+            txt_path = os.path.join('./calendars/', main_filename + '.txt')
+            if os.path.isfile(txt_path):
+
+                # Read DBU url
+                dbu_url = open(txt_path).read()
+
+                # Update and overwrite calendar file
+                updated_cal = build_calendar(dbu_url)
+                filename = save_calendar(updated_cal, dbu_url, filename=main_filename)
+
+                # Print result
+                print('Updated {}'.format(filename))

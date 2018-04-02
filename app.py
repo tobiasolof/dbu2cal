@@ -1,9 +1,8 @@
 import ipgetter
 from flask import Flask, send_from_directory, request, render_template
-from webargs import fields
-from webargs.flaskparser import use_kwargs
 
 import dbu2cal
+
 
 app = Flask(__name__)
 
@@ -18,7 +17,7 @@ def host_cal():
     url = request.form['text']
 
     cal = dbu2cal.build_calendar(url)
-    filename = dbu2cal.save_calendar(cal)
+    filename = dbu2cal.save_calendar(cal, url) + '.ics'
 
     ip = ipgetter.myip()
 

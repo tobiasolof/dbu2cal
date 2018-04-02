@@ -1,6 +1,16 @@
 version: '3'
 services:
   app:
-    build: .
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.web
     ports:
       - 5000:5000
+    volumes:
+      - ./calendars:/dbu2cal/calendars
+  cron:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.cron
+    volumes:
+      - ./calendars:/dbu2cal/calendars

@@ -1,0 +1,26 @@
+FROM python:3.6.4
+
+# Set working directory
+WORKDIR /dbu2cal
+
+# Copy only necessary files
+COPY requirements.txt ./
+RUN pip3 install --upgrade pip
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Install cron
+RUN apt-get update
+RUN apt-get -y install cron
+
+# Install Python requirements
+COPY update_calendars.sh ./
+COPY dbu2cal.py ./
+
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+# Setup cron job
+RUN (echo "* * * * * sh /dbu2cal/update_calendars.sh >> /var/log/cron.log 2>&1") | crontab
+
+# Run the command on container startup
+CMD cron && tail -f /var/log/cron.log
