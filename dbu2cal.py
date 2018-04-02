@@ -30,9 +30,10 @@ def build_calendar(url):
         # Create event object
         temp_event = icalendar.Event()
 
-        # Add title
+        # Add title (including result if available)
         event_name = row[1]['Hjemmehold'] + ' - ' + row[1]['Udehold']
-        temp_event.add('summary', event_name)
+        result = ' (' + row[1]['Res'] + ')' if row[1]['Res'] == row[1]['Res'] else ''
+        temp_event.add('summary', event_name + result)
 
         # Add link to match page
         link = soup.find('a', attrs={
