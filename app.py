@@ -22,7 +22,7 @@ def host_cal():
     ip = ipgetter.myip()
 
     explanation = 'Paste the following link into your calendar program (or click to download): '
-    link = '{}:5000/{}'.format(ip, filename)
+    link = 'http://{}:5000/{}'.format(ip, filename)
 
     return explanation + '<br><br>' + '<a href="{}"> {} </a>'.format(filename, link)
 
