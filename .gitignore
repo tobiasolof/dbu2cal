@@ -5,3 +5,4 @@
 .python-version
 .vscode/
 calendars/
+.DS_Store
