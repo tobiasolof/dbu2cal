@@ -13,6 +13,11 @@ def build_calendar(url):
     df = pd.read_html(url, attrs={
         'class': 'dbustandard stripes full srDefault srProgram1 srDefaultPadding'})[0]
 
+    # Remove first row if it is a duplicate of the header
+    if df.iloc[0, 0] == 'Kamp':
+        df.drop(index=0, inplace=True)
+        df.reset_index(drop=True, inplace=True)
+
     # Correct column names
     new_header = df.columns.to_series().shift(1)
     new_header.iat[0] = 'Kampnr'
