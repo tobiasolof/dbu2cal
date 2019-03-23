@@ -1,9 +1,9 @@
 flask
 webargs
-ipgetter
 icalendar
 pandas
 bs4
 lxml
 html5lib
 requests
+xlrd

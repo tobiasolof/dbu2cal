@@ -1,4 +1,4 @@
-import ipgetter
+import requests
 from flask import Flask, send_from_directory, request, render_template
 
 import dbu2cal
@@ -19,7 +19,7 @@ def host_cal():
     cal = dbu2cal.build_calendar(url)
     filename = dbu2cal.save_calendar(cal, url) + '.ics'
 
-    ip = ipgetter.myip()
+    ip = requests.get('https://api.ipify.org').text
 
     explanation = 'Paste the following link into your calendar program (or click to download): '
     link = 'http://{}:5000/{}'.format(ip, filename)
