@@ -28,6 +28,9 @@ def build_calendar(url):
         xlsx_url = soup.find(attrs={'id': 'ctl00_ContentPlaceHolder1_Hold1_PageTop_PagePrint_WordLinkRight'}).get('href')
         df = pd.read_html('http://resultater.dai-sport.dk' + xlsx_url, header=0)[0]
         df = df.rename(columns={'Kl.': 'Tid', 'Hjemmehold': 'Hjemme', 'Udehold': 'Ude'})
+    
+    # Format date column
+    df['Dato'] = pd.to_datetime(df['Dato'], dayfirst=True).astype(str)
 
     # Create calendar object
     cal = icalendar.Calendar()
