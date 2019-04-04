@@ -51,7 +51,7 @@ def build_calendar(url):
             else:
                 result = ''
         if dai:
-            if not np.isnan(row['Resultat']):
+            if isinstance(row['Resultat'], str):
                 result = ' (' + row['Resultat'] + ')'
             else:
                 result = ''
