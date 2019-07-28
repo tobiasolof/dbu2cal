@@ -59,7 +59,10 @@ def build_calendar(url):
 
         # Add link to match page
         if dbu:
-            league_id = re.findall(r'(?<=%C2%).+(?=/)', url)[0]
+            try:
+                league_id = re.findall(r'(?<=%C2%).+(?=/)', url)[0]
+            except IndexError:
+                league_id = re.findall(r'(?<=\d{6}_)\d{6}(?=/)', url)[0]
             match_url = 'https://www.dbukoebenhavn.dk/resultater/kamp/{}%C2%{}'.format(row['Kampnr'], league_id)
         if dai:
             match_url = url
